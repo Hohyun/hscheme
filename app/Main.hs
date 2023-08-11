@@ -1,9 +1,11 @@
 module Main (main) where
 
-import Lib
-import System.Environment
+import           Control.Monad
+import           Lib
+import           System.Environment
 
 main :: IO ()
 main = do
-    (expr:_) <- getArgs
-    putStrLn (readExpr expr)
+  args <- getArgs
+  evaled <- return $ liftM show $ readExpr (args !! 0) >>= eval
+  putStrLn $ extractValue $ trapError evaled
